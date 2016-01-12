@@ -2,24 +2,18 @@ import 'babel-polyfill';
 import 'bootstrap/dist/css/bootstrap.css';
 import React from 'react';
 import { render } from 'react-dom';
-import { Router, Route, IndexRoute } from 'react-router';
-import { createHistory } from 'history';
-import App from './containers/App';
-import Welcome from './containers/Welcome';
-import Questions from './containers/Questions';
-import Results from './containers/Results';
-import HighScores from './containers/HighScores';
-import NotFound from './components/NotFound';
+import { Provider } from 'react-redux';
+import { Router } from 'react-router';
+import routes, { history } from './routes';
+import configureStore from './store/configureStore';
+
+const store = configureStore();
 
 render(
-  <Router history={createHistory()}>
-    <Route path="/" component={App}>
-      <IndexRoute component={Welcome} />
-      <Route path="questions" component={Questions} />
-      <Route path="results" component={Results} />
-      <Route path="high-scores" component={HighScores} />
-      <Route path="*" component={NotFound} />
-    </Route>
-  </Router>,
+  <Provider store={store}>
+    <Router history={history}>
+      {routes}
+    </Router>
+  </Provider>,
   document.getElementById('root')
 );
