@@ -7,6 +7,7 @@ import webpack from 'webpack';
 import webpackDevMiddleware from 'webpack-dev-middleware';
 import webpackHotMiddleware from 'webpack-hot-middleware';
 import webpackConfig from '../../webpack.config';
+import api from './api';
 
 export function start(config) {
   process.env.NODE_ENV = config;
@@ -24,6 +25,8 @@ export function start(config) {
   }
 
   app.use(bodyParser.json());
+
+  app.use('/api', api);
 
   // Send SPA on all routes except /api, so they can 404 normally
   app.get(/^(?!\/api).*$/, (req, res) => {

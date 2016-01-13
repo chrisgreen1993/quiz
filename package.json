@@ -24,7 +24,8 @@
     "react-router": "^1.0.3",
     "redux": "^3.0.5",
     "redux-logger": "^2.3.2",
-    "redux-thunk": "^1.0.3"
+    "redux-thunk": "^1.0.3",
+    "superagent": "^1.6.1"
   },
   "devDependencies": {
     "babel-loader": "^6.2.1",
@@ -40,8 +41,10 @@
     "eslint-plugin-react": "^3.14.0",
     "file-loader": "^0.8.5",
     "mocha": "^2.3.4",
+    "nock": "^5.2.1",
     "redux-mock-store": "0.0.6",
     "style-loader": "^0.13.0",
+    "supertest": "^1.1.0",
     "url-loader": "^0.5.7",
     "webpack": "^1.12.10",
     "webpack-dev-middleware": "^1.4.0",
