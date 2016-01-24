@@ -7,11 +7,11 @@ const api = Router();
 
 api.post('/responses', (req, res, next) => {
   const { name, answers } = req.body;
-  const questionIds = answers.map(answer => answer.question);
+  const questionIds = answers.map(answer => answer.questionId);
   Question.find({ _id: { $in: questionIds } })
     .then(questions => {
       return questions.map((question, i) => {
-        const choice = question.choices.id(answers[i].choice);
+        const choice = question.choices.id(answers[i].questionChoiceId);
         return { question, choice };
       });
     })

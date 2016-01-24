@@ -5,8 +5,8 @@ class Results extends Component {
   render() {
     return (
       <div>
-        <h3>Thank you NAME!</h3>
-        <p>You scored X out of a possible 150 in the cash flow quiz</p>
+        <h3>Thank you {this.props.answers.get('name')} </h3>
+        <p>You scored {this.props.answers.get('total')} out of a possible 150 in the cash flow quiz</p>
         <Link to="/high-scores" className="btn btn-primary btn-lg">High Scores</Link>
       </div>
     );

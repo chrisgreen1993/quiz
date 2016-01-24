@@ -3,8 +3,10 @@ import chaiImmutable from 'chai-immutable';
 import Immutable from 'immutable';
 import answers from '../../src/client/reducers/answers';
 import questions from '../../src/client/reducers/questions';
+import highScores from '../../src/client/reducers/highScores';
 import { SET_NAME } from '../../src/client/actions/answers';
 import { GET_QUESTIONS_SUCCESS } from '../../src/client/actions/questions';
+import { GET_HIGH_SCORES_SUCCESS } from '../../src/client/actions/highScores';
 
 chai.use(chaiImmutable);
 
@@ -51,4 +53,20 @@ describe('reducers', () => {
       expect(state).to.equal(expected);
     });
   });
+  describe('highScores', () => {
+    it('Shoudld return initial state', () => {
+      const state = highScores(undefined, {});
+      const expected = Immutable.List();
+      expect(state).to.equal(expected);
+    });
+    it('Should return list of highScores when action is GET_HIGH_SCORES_SUCCESS', () => {
+      const action = {
+        type: GET_HIGH_SCORES_SUCCESS,
+        highScores: [{ _id: '21224', name: 'Chris', answers: [], total: 100 }]
+      }
+      const state = highScores(undefined, action);
+      const expected = Immutable.fromJS([{ _id: '21224', name: 'Chris', answers: [], total: 100 }]);
+      expect(state).to.equal(expected);
+    })
+  })
 });

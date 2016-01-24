@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import Immutable from 'immutable';
 import { getQuestions } from '../actions/questions';
-import { saveAnswer } from '../actions/answers';
+import { saveAnswer, saveAllAnswers } from '../actions/answers';
 
 class Question extends Component {
   constructor(props) {
@@ -27,14 +27,16 @@ class Question extends Component {
     const questionId = question.get('_id');
     const choice = question.get('choices').find(choice => choice.get('_id') === this.state.questionChoiceId);
     this.props.dispatch(saveAnswer(questionId, this.state.questionChoiceId, choice.get('points')));
-    if (question === this.props.question.last()) {
+    if (question === this.props.questions.get('questions').last()) {
       this.props.dispatch(saveAllAnswers())
+        .then(() => this.props.history.pushState(null, '/results'))
+        .catch((error) => console.error(error));
     }
     this.setState({ questionChoiceId: '' });
   }
 
   render() {
-    if (this.props.questions.get('questions').isEmpty()) return null;
+    if (this.props.questions.get('questions').isEmpty() || this.props.questions.get('loading')) return null;
     const index = this.props.answers.get('currentQuestionIndex');
     const question = this.props.questions.getIn(['questions', index]);
     return (

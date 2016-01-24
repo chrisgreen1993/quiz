@@ -4,6 +4,7 @@ import thunk from 'redux-thunk';
 import configureMockStore from 'redux-mock-store';
 import { setName } from '../../src/client/actions/answers';
 import { getQuestions } from '../../src/client/actions/questions';
+import { getHighScores } from '../../src/client/actions/highScores';
 
 describe('actions', () => {
   let mockStore;
@@ -41,4 +42,17 @@ describe('actions', () => {
       store.dispatch(getQuestions());
     });
   });
+  describe('highScores', () => {
+    it('#getHighScores should dispatch GET_HIGH_SCORES and GET_QUESTIONS_FAIL when fetching highscores fails', done => {
+      nock('http://localhost')
+        .get('/api/responses/high-scores')
+        .reply(500, { message: 'Internal Server Error' })
+      const expectedActions = [
+        { type: 'GET_HIGH_SCORES' },
+        { type: 'GET_HIGH_SCORES_FAIL', error: { message: 'Internal Server Error' } },
+      ];
+      const store = mockStore({}, expectedActions, done);
+      store.dispatch(getHighScores());
+    })
+  })
 });

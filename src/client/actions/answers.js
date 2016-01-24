@@ -16,13 +16,21 @@ export function saveAnswer(questionId, questionChoiceId, points) {
 
 export function saveAllAnswers() {
   return (dispatch, getState) => {
-    const { answers } = getState();
-    dispatch({ type: SAVE_ALL_ANSWERS });
-    return request.post('/api/responses')
-      .send({ answers })
-      .end((err, res) => {
-        if (err) return dispatch({ type: SAVE_ALL_ANSWERS_FAIL, error: err.response.body });
-        return dispatch({ type: SAVE_ALL_ANSWERS_SUCCESS, questions: res.body });
-      });
+    return new Promise((resolve, reject) => {
+      const { answers } = getState();
+      const response = answers.delete('total').delete('currentQuestionIndex');
+      console.log(response.toJS());
+      dispatch({ type: SAVE_ALL_ANSWERS });
+      return request.post('/api/responses')
+        .send(response.toJS())
+        .end((err, res) => {
+          if (err) {
+            dispatch({ type: SAVE_ALL_ANSWERS_FAIL, error: err.response.body });
+            return reject(err.response.body);
+          }
+          dispatch({ type: SAVE_ALL_ANSWERS_SUCCESS });
+          return resolve();
+        });
+    });
   };
 }
