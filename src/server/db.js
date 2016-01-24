@@ -6,9 +6,7 @@ export function init() {
   const db = mongoose.connect('mongodb://localhost/quiz').connection;
   mongoose.Promise = Promise;
   db.once('open', () => {
-    const promises = questions.map(question => {
-      return Question.create(question);
-    });
-    Promise.all(promises).then(() => console.log('DONE'));
+    const promises = questions.map(question => Question.create(question));
+    Promise.all(promises).then(() => console.log('DONE')).catch(err => console.error(err));
   });
 }
