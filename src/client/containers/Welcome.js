@@ -2,6 +2,9 @@ import React, { Component, PropTypes } from 'react';
 import Immutable from 'immutable';
 import { setName, resetResponse } from '../actions/response';
 
+/**
+ * Container for /
+ */
 class Welcome extends Component {
   constructor(props) {
     super(props);
@@ -11,6 +14,7 @@ class Welcome extends Component {
   }
 
   componentWillMount() {
+    // Reset response - so user cant get double points
     this.props.dispatch(resetResponse());
   }
 
@@ -20,6 +24,7 @@ class Welcome extends Component {
 
   handleSubmit(e) {
     e.preventDefault();
+    // Set name and go to questions
     this.props.dispatch(setName(this.state.name));
     this.props.history.pushState(null, '/questions/1');
   }

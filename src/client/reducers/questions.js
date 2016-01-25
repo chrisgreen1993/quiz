@@ -3,6 +3,7 @@ import { GET_QUESTIONS_SUCCESS } from '../actions/questions';
 
 const initialState = []
 
+// Reducer for quiz questions
 function questions(state = Immutable.fromJS(initialState), action) {
   switch (action.type) {
     case GET_QUESTIONS_SUCCESS:
@@ -12,10 +13,16 @@ function questions(state = Immutable.fromJS(initialState), action) {
   }
 }
 
+/**
+ * Gets current question by index from questions
+ */
 function getCurrentQuestion(state, index) {
   return state.get(index) || Immutable.Map();
 }
 
+/**
+ * Returns true if index is last question
+ */
 function isLastQuestion(state, index) {
   const count = state.size;
   return index + 1 === count;

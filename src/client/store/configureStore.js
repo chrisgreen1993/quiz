@@ -6,6 +6,9 @@ import rootReducer from '../reducers';
 const logger = createLogger();
 const createStoreWithMiddleware = applyMiddleware(thunk, logger)(createStore);
 
+/**
+ * Setup redux store with middlewares + hot reload
+ */
 function configureStore(initialState) {
   const store = createStoreWithMiddleware(rootReducer, initialState);
   if (module.hot) {

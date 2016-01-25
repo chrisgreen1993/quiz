@@ -4,7 +4,7 @@ export const GET_HIGH_SCORES = 'GET_HIGH_SCORES';
 export const GET_HIGH_SCORES_SUCCESS = 'GET_HIGH_SCORES_SUCCESS';
 export const GET_HIGH_SCORES_FAIL = 'GET_HIGH_SCORES_FAIL';
 
-
+// Fetches high scores from server
 export function getHighScores() {
   return dispatch => {
     dispatch({ type: GET_HIGH_SCORES });

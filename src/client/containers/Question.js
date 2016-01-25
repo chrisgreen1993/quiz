@@ -6,6 +6,9 @@ import { getCurrentQuestion, isLastQuestion } from '../reducers/questions';
 import { getQuestions } from '../actions/questions';
 import { addAnswer, removeAnswer } from '../actions/response';
 
+/**
+ * Compnent to diplay current question
+ */
 class Question extends Component {
   constructor(props) {
     super(props);
@@ -15,10 +18,12 @@ class Question extends Component {
   }
 
   componentWillMount() {
+    // Fetch all questions on mount
     this.props.dispatch(getQuestions());
   }
 
   componentWillReceiveProps(nextProps) {
+    // Remove answer if user presses back button
     if (this.props.params.id > nextProps.params.id) {
       this.props.dispatch(removeAnswer(nextProps.params.id - 1));
     }
@@ -32,6 +37,7 @@ class Question extends Component {
     e.preventDefault();
     const question = this.props.question.toJS();
     const points = question.choices.find((choice) => choice._id === this.state.choice).points;
+    // Add answer - then go to next question or results
     this.props.dispatch(addAnswer(question._id, this.state.choice, points));
     const nextQuestion = Number(this.props.params.id) + 1
     if (!this.props.isLastQuestion) {
@@ -69,6 +75,7 @@ Question.propTypes = {
 };
 
 function mapStateToProps(state, props) {
+  // Get current question from questions using url param
   const currentQuestionIndex = props.params.id - 1;
   return {
     question: getCurrentQuestion(state.questions, currentQuestionIndex),

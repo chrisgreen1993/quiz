@@ -1,5 +1,6 @@
 import React from 'react';
 
+// Individual radio button for question
 const QuestonChoice = ({ onChange, checked, choice }) => {
   return (
     <div className="radio">

@@ -2,6 +2,9 @@ import mongoose from 'mongoose';
 import { Question } from './models';
 import questions from '../../questions.json';
 
+/**
+ * Initializes db with questions from questions.json
+ */
 export function init() {
   const db = mongoose.connect('mongodb://localhost/quiz').connection;
   mongoose.Promise = Promise;

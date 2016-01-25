@@ -2,6 +2,7 @@ import Immutable from 'immutable';
 import { SET_NAME, ADD_ANSWER, REMOVE_ANSWER, SAVE_RESPONSE_SUCCESS, SAVE_RESPONSE, RESET_RESPONSE } from '../actions/response';
 import { GET_QUESTIONS_SUCCESS } from '../actions/questions';
 
+// Calculates total no of points user could score
 function calculatePointsTotal(questions) {
   return questions.reduce((prev, question, index, questionsArr) => {
     const points = question.choices.map(choice => choice.points);
@@ -10,6 +11,7 @@ function calculatePointsTotal(questions) {
   }, 0);
 }
 
+// Calculates users current score
 function calculatePointsScore(answers) {
   return answers.reduce((prev, answer, index, answersArr) => {
     return prev + answer.points;
@@ -24,6 +26,7 @@ const initialState = {
   answers: [],
 };
 
+// Recucer for users quiz response
 function response(state = Immutable.fromJS(initialState), action) {
   switch (action.type) {
     case SET_NAME:

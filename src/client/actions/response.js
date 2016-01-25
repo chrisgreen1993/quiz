@@ -24,8 +24,10 @@ export function removeAnswer(index) {
   return { type: REMOVE_ANSWER, index };
 }
 
+// Saves quiz response to server
 export function saveResponse() {
   return (dispatch, getState) => {
+    // Get response from store and remove values we don't need
     const { response } = getState();
     const name = response.get('name');
     const answers = response.toJS().answers.map(({ question, choice }) => ({ question, choice }));

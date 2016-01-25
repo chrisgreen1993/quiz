@@ -181,7 +181,7 @@ describe('reducers', () => {
     });
     it('#isLastQuestion should return true if index is last question', () => {
       const questionsArr = Immutable.fromJS([{ text: 'q1' }, { text: 'q2' }]);
-      expect(isLastQuestion(questionsArr, 0)).to.be.false;
+      expect(isLastQuestion(questionsArr, 1)).to.be.false;
     });
   });
   describe('highScores', () => {

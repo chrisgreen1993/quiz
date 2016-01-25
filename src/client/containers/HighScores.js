@@ -5,13 +5,16 @@ import Immutable from 'immutable';
 import { getHighScores } from '../actions/highScores';
 import HighScoreTable from '../components/HighScoreTable';
 
-
+/**
+ * Quiz high score
+ */
 class HighScores extends Component {
   constructor(props) {
     super(props);
   }
 
   componentWillMount() {
+    // Fetch high scores
     this.props.dispatch(getHighScores());
   }
 

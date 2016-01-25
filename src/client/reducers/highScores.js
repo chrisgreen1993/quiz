@@ -3,6 +3,7 @@ import { GET_HIGH_SCORES_SUCCESS } from '../actions/highScores';
 
 const initialState = [];
 
+// Reducer for high score table
 function highScores(state = Immutable.fromJS(initialState), action) {
   switch (action.type) {
     case GET_HIGH_SCORES_SUCCESS:

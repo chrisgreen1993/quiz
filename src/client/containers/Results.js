@@ -3,6 +3,9 @@ import { Link } from 'react-router';
 import Immutable from 'immutable';
 import { saveResponse } from '../actions/response';
 
+/**
+ * Results of quiz
+ */
 class Results extends Component {
   constructor(props) {
     super(props)

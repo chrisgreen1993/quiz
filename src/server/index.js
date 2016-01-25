@@ -9,6 +9,11 @@ import webpackHotMiddleware from 'webpack-hot-middleware';
 import webpackConfig from '../../webpack.config';
 import api from './api';
 
+/**
+ * Starts app with config
+ *
+ * @param  {String} config config to start app as (test, development, etc)
+ */
 export function start(config) {
   process.env.NODE_ENV = config;
   const app = express();
@@ -18,6 +23,7 @@ export function start(config) {
   db.on('error', console.error.bind(console, 'connection error'));
   mongoose.Promise = Promise;
 
+  // Setup webpack on dev
   if (app.get('env') === 'development') {
     const compiler = webpack(webpackConfig);
     app.use(webpackDevMiddleware(compiler, { publicPath: webpackConfig.output.publicPath }));
@@ -26,6 +32,7 @@ export function start(config) {
 
   app.use(bodyParser.json());
 
+  // Mount api routes at /api
   app.use('/api', api);
 
   // Send SPA on all routes except /api, so they can 404 normally
@@ -33,6 +40,7 @@ export function start(config) {
     res.sendFile(path.resolve(__dirname, '..', 'client', 'index.html'));
   });
 
+  // Error handlers
   app.use((err, req, res, next) => {
     console.error(err);
     const { statusCode, message, errors } = err;
