@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import QuestonChoice from '../components/QuestionChoice';
 import { getCurrentQuestion, isLastQuestion } from '../reducers/questions';
 import { getQuestions } from '../actions/questions';
-import { addAnswer } from '../actions/response';
+import { addAnswer, removeAnswer } from '../actions/response';
 
 class Question extends Component {
   constructor(props) {
@@ -16,6 +16,12 @@ class Question extends Component {
 
   componentWillMount() {
     this.props.dispatch(getQuestions());
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (this.props.params.id > nextProps.params.id) {
+      this.props.dispatch(removeAnswer(nextProps.params.id - 1));
+    }
   }
 
   handleChange(e) {
@@ -63,10 +69,8 @@ Question.propTypes = {
 };
 
 function mapStateToProps(state, props) {
-  const loading = state.questions.get('loading');
   const currentQuestionIndex = props.params.id - 1;
   return {
-    loading,
     question: getCurrentQuestion(state.questions, currentQuestionIndex),
     isLastQuestion: isLastQuestion(state.questions, currentQuestionIndex),
   };

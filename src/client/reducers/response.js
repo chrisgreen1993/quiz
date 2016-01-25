@@ -1,12 +1,18 @@
 import Immutable from 'immutable';
-import { SET_NAME, ADD_ANSWER, SAVE_RESPONSE_SUCCESS, SAVE_RESPONSE, RESET_RESPONSE } from '../actions/response';
+import { SET_NAME, ADD_ANSWER, REMOVE_ANSWER, SAVE_RESPONSE_SUCCESS, SAVE_RESPONSE, RESET_RESPONSE } from '../actions/response';
 import { GET_QUESTIONS_SUCCESS } from '../actions/questions';
 
 function calculatePointsTotal(questions) {
-  return questions.reduce((prev, question, index, _) => {
+  return questions.reduce((prev, question, index, questionsArr) => {
     const points = question.choices.map(choice => choice.points);
     const largest = Math.max.apply(Math, points);
     return prev + largest;
+  }, 0);
+}
+
+function calculatePointsScore(answers) {
+  return answers.reduce((prev, answer, index, answersArr) => {
+    return prev + answer.points;
   }, 0);
 }
 
@@ -23,9 +29,13 @@ function response(state = Immutable.fromJS(initialState), action) {
     case SET_NAME:
       return state.set('name', Immutable.fromJS(action.name));
     case ADD_ANSWER:
-      return state
-        .update('score', score => score + action.points)
-        .set('answers', state.get('answers').push(Immutable.fromJS(action.answer)));
+      const newStateAdd = state.set('answers', state.get('answers').push(Immutable.fromJS(action.answer)));
+      const answersAdd = newStateAdd.get('answers').toJS();
+      return newStateAdd.set('score', calculatePointsScore(answersAdd));
+    case REMOVE_ANSWER:
+      const newStateRemove = state.set('answers', state.get('answers').delete(action.index))
+      const answersRemove = newStateRemove.get('answers').toJS();
+      return newStateRemove.set('score', calculatePointsScore(answersRemove));
     case GET_QUESTIONS_SUCCESS:
       const total = calculatePointsTotal(action.questions);
       return state.set('total', total);

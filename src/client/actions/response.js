@@ -2,6 +2,7 @@ import request from 'superagent';
 
 export const SET_NAME = 'SET_NAME';
 export const ADD_ANSWER = 'ADD_ANSWER';
+export const REMOVE_ANSWER = 'REMOVE_ANSWER';
 export const SAVE_RESPONSE = 'SAVE_RESPONSE';
 export const SAVE_RESPONSE_SUCCESS = 'SAVE_RESPONSE_SUCCESS';
 export const SAVE_RESPONSE_FAIL = 'SAVE_RESPONSE_FAIL';
@@ -12,22 +13,27 @@ export function setName(name) {
 }
 
 export function resetResponse() {
-  return { type : RESET_RESPONSE };
+  return { type: RESET_RESPONSE };
 }
 
 export function addAnswer(question, choice, points) {
-  return { type: ADD_ANSWER, answer: { question, choice }, points };
+  return { type: ADD_ANSWER, answer: { question, choice, points } };
+}
+
+export function removeAnswer(index) {
+  return { type: REMOVE_ANSWER, index };
 }
 
 export function saveResponse() {
   return (dispatch, getState) => {
     const { response } = getState();
-    const responseToSave = response.delete('total').delete('score').delete('saved').toJS();
+    const name = response.get('name');
+    const answers = response.toJS().answers.map(({ question, choice }) => ({ question, choice }));
     dispatch({ type: SAVE_RESPONSE });
     return request.post('/api/responses')
-      .send(responseToSave)
+      .send({ name, answers })
       .end((err, _) => {
-        if (err) dispatch({ type: SAVE_RESPONSE_FAIL, error: err.response.body });
+        if (err) return dispatch({ type: SAVE_RESPONSE_FAIL, error: err.response.body });
         dispatch({ type: SAVE_RESPONSE_SUCCESS });
       });
   };

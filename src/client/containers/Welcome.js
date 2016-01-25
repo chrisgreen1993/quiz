@@ -1,10 +1,11 @@
 import React, { Component, PropTypes } from 'react';
+import Immutable from 'immutable';
 import { setName, resetResponse } from '../actions/response';
 
 class Welcome extends Component {
   constructor(props) {
     super(props);
-    this.state = { name: '' };
+    this.state = { name: this.props.response.get('name') };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
@@ -48,6 +49,7 @@ class Welcome extends Component {
 Welcome.propTypes = {
   dispatch: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
+  response: PropTypes.instanceOf(Immutable.Map).isRequired,
 };
 
 export default Welcome;
