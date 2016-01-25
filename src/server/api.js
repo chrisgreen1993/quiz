@@ -7,11 +7,11 @@ const api = Router();
 
 api.post('/responses', (req, res, next) => {
   const { name, answers } = req.body;
-  const questionIds = answers.map(answer => answer.questionId);
+  const questionIds = answers.map(answer => answer.question);
   Question.find({ _id: { $in: questionIds } })
     .then(questions => {
       return questions.map((question, i) => {
-        const choice = question.choices.id(answers[i].questionChoiceId);
+        const choice = question.choices.id(answers[i].choice);
         return { question, choice };
       });
     })
@@ -24,6 +24,7 @@ api.get('/responses/high-scores', (req, res, next) => {
   const aggregation = [
     { $project: { _id: 1, name: 1, answers: 1, total: { $sum: '$answers.choice.points' } } },
     { $sort: { total: -1 } },
+    { $limit: 10 },
   ];
   Response.aggregate(aggregation).exec()
     .then(responses => res.json(responses))

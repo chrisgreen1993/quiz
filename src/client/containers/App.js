@@ -4,9 +4,10 @@ import NavBar from '../components/NavBar';
 
 class App extends Component {
   render() {
+    const isQuestionRoute = this.props.routes[this.props.routes.length - 1].path === 'questions/:id';
     return (
       <div className="container" style={{ maxWidth: '800px', marginTop: '20px' }}>
-        <NavBar />
+        {isQuestionRoute && <NavBar score={this.props.response.get('score')} /> || <NavBar />}
         <div className="row">
           <div className="col-md-12">
             {React.cloneElement(this.props.children, this.props)}
@@ -23,8 +24,7 @@ App.propTypes = {
 
 function mapStateToProps(state) {
   return {
-    answers: state.answers,
-    questions: state.questions,
+    response: state.response,
   };
 }
 

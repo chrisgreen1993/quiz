@@ -1,10 +1,10 @@
 import { combineReducers } from 'redux';
-import answers from './answers';
+import response from './response';
 import questions from './questions';
 import highScores from './highScores';
 
 const rootReducer = combineReducers({
-  answers,
+  response,
   questions,
   highScores,
 });

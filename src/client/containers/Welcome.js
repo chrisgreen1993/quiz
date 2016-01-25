@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { setName } from '../actions/answers';
+import { setName, resetResponse } from '../actions/response';
 
 class Welcome extends Component {
   constructor(props) {
@@ -9,6 +9,10 @@ class Welcome extends Component {
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
+  componentWillMount() {
+    this.props.dispatch(resetResponse());
+  }
+
   handleChange(e) {
     this.setState({ name: e.target.value });
   }
@@ -16,7 +20,7 @@ class Welcome extends Component {
   handleSubmit(e) {
     e.preventDefault();
     this.props.dispatch(setName(this.state.name));
-    this.props.history.pushState(null, '/questions');
+    this.props.history.pushState(null, '/questions/1');
   }
 
   render() {

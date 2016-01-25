@@ -1,28 +1,24 @@
 import Immutable from 'immutable';
-import { GET_QUESTIONS, GET_QUESTIONS_SUCCESS, GET_QUESTIONS_FAIL } from '../actions/questions';
-import { SAVE_ALL_ANSWERS, SAVE_ALL_ANSWERS_SUCCESS, SAVE_ALL_ANSWERS_FAIL } from '../actions/answers';
+import { GET_QUESTIONS_SUCCESS } from '../actions/questions';
 
-const initialState = {
-  loading: false,
-  questions: [],
-};
+const initialState = []
 
 function questions(state = Immutable.fromJS(initialState), action) {
   switch (action.type) {
-    case GET_QUESTIONS:
-    case SAVE_ALL_ANSWERS:
-      return state.set('loading', true);
     case GET_QUESTIONS_SUCCESS:
-      return state
-        .set('questions', Immutable.fromJS(action.questions))
-        .set('loading', false);
-    case GET_QUESTIONS_FAIL:
-    case SAVE_ALL_ANSWERS_FAIL:
-    case SAVE_ALL_ANSWERS_SUCCESS:
-      return state.set('loading', false);
+      return Immutable.fromJS(action.questions)
     default:
       return state;
   }
 }
 
-export default questions;
+function getCurrentQuestion(state, index) {
+  return state.get(index) || Immutable.Map();
+}
+
+function isLastQuestion(state, index) {
+  const count = state.size;
+  return index + 1 === count;
+}
+
+export { questions as default, getCurrentQuestion, isLastQuestion };

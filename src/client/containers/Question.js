@@ -1,12 +1,15 @@
 import React, { Component, PropTypes } from 'react';
 import Immutable from 'immutable';
+import { connect } from 'react-redux';
+import QuestonChoice from '../components/QuestionChoice';
+import { getCurrentQuestion, isLastQuestion } from '../reducers/questions';
 import { getQuestions } from '../actions/questions';
-import { saveAnswer, saveAllAnswers } from '../actions/answers';
+import { addAnswer } from '../actions/response';
 
 class Question extends Component {
   constructor(props) {
     super(props);
-    this.state = { questionChoiceId: '' };
+    this.state = { choice: '' };
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleChange = this.handleChange.bind(this);
   }
@@ -16,45 +19,34 @@ class Question extends Component {
   }
 
   handleChange(e) {
-    console.log(e);
-    this.setState({ questionChoiceId: e.currentTarget.value });
+    this.setState({ choice: e.currentTarget.value });
   }
 
   handleSubmit(e) {
     e.preventDefault();
-    const index = this.props.answers.get('currentQuestionIndex');
-    const question = this.props.questions.getIn(['questions', index]);
-    const questionId = question.get('_id');
-    const choice = question.get('choices').find(choice => choice.get('_id') === this.state.questionChoiceId);
-    this.props.dispatch(saveAnswer(questionId, this.state.questionChoiceId, choice.get('points')));
-    if (question === this.props.questions.get('questions').last()) {
-      this.props.dispatch(saveAllAnswers())
-        .then(() => this.props.history.pushState(null, '/results'))
-        .catch((error) => console.error(error));
+    const question = this.props.question.toJS();
+    const points = question.choices.find((choice) => choice._id === this.state.choice).points;
+    this.props.dispatch(addAnswer(question._id, this.state.choice, points));
+    const nextQuestion = Number(this.props.params.id) + 1
+    if (!this.props.isLastQuestion) {
+      this.props.history.pushState(null, '/questions/' + nextQuestion);
+    } else {
+      this.props.history.pushState(null, '/results');
     }
-    this.setState({ questionChoiceId: '' });
   }
 
   render() {
-    if (this.props.questions.get('questions').isEmpty() || this.props.questions.get('loading')) return null;
-    const index = this.props.answers.get('currentQuestionIndex');
-    const question = this.props.questions.getIn(['questions', index]);
+    const question = this.props.question.toJS();
+    if (!Object.keys(question).length) return null;
+    const btnText = this.props.isLastQuestion ? 'Finish' : 'Next';
     return (
       <div>
-        <h3>{question.get('text')}</h3>
+        <h3>{question.text}</h3>
         <form onSubmit={this.handleSubmit}>
-          {question.get('choices').map((choice, i) => {
-            console.log(choice);
-            return (
-              <div key={i} className="radio">
-                <label>
-                  <input type="radio" name="answer" onChange={this.handleChange} checked={choice.get('_id') === this.state.questionChoiceId} value={choice.get('_id')} required />
-                  {choice.get('text')}
-                </label>
-              </div>
-            );
+          {question.choices.map((choice, i) => {
+            return <QuestonChoice key={i} choice={choice} onChange={this.handleChange} checked={choice._id === this.state.choice} />
           })}
-          <button className="btn btn-primary btn-lg">Next</button>
+          <button className="btn btn-primary btn-lg">{btnText}</button>
         </form>
       </div>
     );
@@ -63,8 +55,21 @@ class Question extends Component {
 
 Question.propTypes = {
   dispatch: PropTypes.func.isRequired,
-  questions: PropTypes.instanceOf(Immutable.Map).isRequired,
+  history: PropTypes.object.isRequired,
+  params: PropTypes.object.isRequired,
+  question: PropTypes.instanceOf(Immutable.Map).isRequired,
   answers: PropTypes.instanceOf(Immutable.Map).isRequired,
+  isLastQuestion: PropTypes.bool.isRequired,
 };
 
-export default Question;
+function mapStateToProps(state, props) {
+  const loading = state.questions.get('loading');
+  const currentQuestionIndex = props.params.id - 1;
+  return {
+    loading,
+    question: getCurrentQuestion(state.questions, currentQuestionIndex),
+    isLastQuestion: isLastQuestion(state.questions, currentQuestionIndex),
+  };
+}
+
+export default connect(mapStateToProps)(Question);
