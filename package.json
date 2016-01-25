@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "initdb": "node init.js",
     "start": "node index.js",
     "test": "NODE_ENV=test node_modules/mocha/bin/mocha --recursive --compilers js:babel-register"
   },
